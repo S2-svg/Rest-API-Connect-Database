@@ -1,7 +1,7 @@
 import User from "../models/userModel.js";
 import { BaseController } from "./BaseController.js";
 
-class UserController extends BaseController {
+export class UserController extends BaseController {
 
   // GET /users
   async getUsers(req, res) {
