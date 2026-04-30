@@ -1,9 +1,10 @@
 import User from "../models/userModel.js";
-import { Message } from "./BaseController.js";
+import { BaseController } from "./BaseController.js";
 
-export class UserController extends BaseController {
+class UserController extends BaseController {
+
   // GET /users
-  static async getUsers(req, res) {
+  async getUsers(req, res) {
     try {
       const users = await User.getAll();
       return this.successResponse(res, users, "Users retrieved successfully");
@@ -13,7 +14,7 @@ export class UserController extends BaseController {
   }
 
   // POST /users
-  static async createUser(req, res) {
+  async createUser(req, res) {
     try {
       const { employee_id, employee_name } = req.body;
 
@@ -29,7 +30,7 @@ export class UserController extends BaseController {
   }
 
   // PUT /users/:id
-  static async updateUser(req, res) {
+  async updateUser(req, res) {
     try {
       const { id } = req.params;
       const { employee_name } = req.body;
@@ -50,7 +51,7 @@ export class UserController extends BaseController {
   }
 
   // DELETE /users/:id
-  static async deleteUser(req, res) {
+  async deleteUser(req, res) {
     try {
       const { id } = req.params;
 
@@ -66,4 +67,4 @@ export class UserController extends BaseController {
   }
 }
 
-export default UserController;
+export default new UserController();
