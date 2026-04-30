@@ -1,20 +1,14 @@
 import User from "../models/userModel.js";
+import { Message } from "./BaseController.js";
 
-export class UserController {
+export class UserController extends BaseController {
   // GET /users
   static async getUsers(req, res) {
     try {
       const users = await User.getAll();
-      return res.json({
-        success: true,
-        message: "Users retrieved successfully",
-        data: users,
-      });
+      return this.successResponse(res, users, "Users retrieved successfully");
     } catch (error) {
-      return res.status(500).json({
-        success: false,
-        message: error.message
-      });
+      return this.errorResponse(res, error.message);
     }
   }
 
@@ -24,22 +18,13 @@ export class UserController {
       const { employee_id, employee_name } = req.body;
 
       if (!employee_name) {
-        return res.status(400).json({ 
-          success: false,
-          message: "employee_name is required" });
+        return this.errorResponse(res, "employee_name is required", 400);
       }
 
       const newUser = await User.create({ employee_id, employee_name });
-      return res.status(201).json({
-        success: true,
-        message: "User created successfully",
-        data: newUser
-      });
+      return this.successResponse(res, newUser, "User created successfully");
     } catch (error) {
-      return res.status(500).json({
-        success: false,
-        message: error.message
-      });
+      return this.errorResponse(res, error.message, 500);
     }
   }
 
@@ -50,29 +35,17 @@ export class UserController {
       const { employee_name } = req.body;
 
       if (!employee_name) {
-        return res.status(400).json({ 
-          success: false,
-          message: "employee_name is required" });
+        return this.errorResponse(res, "employee_name is required", 400);
       }
 
       const result = await User.update(id, employee_name);
 
       if (result.affectedRows === 0) {
-        return res.status(404).json({
-          success: false,
-          message: "User not found"
-        });
+        return this.errorResponse(res, "User not found", 404);
       }
-
-      return res.json({
-        success: true,
-        message: "User updated successfully"
-      });
+      return this.successResponse(res, null, "User updated successfully");
     } catch (error) {
-      return res.status(500).json({
-        success: false,
-        message: error.message
-      });
+      return this.errorResponse(res, error.message, 500);
     }
   }
 
@@ -84,21 +57,11 @@ export class UserController {
       const result = await User.delete(id);
 
       if (result.affectedRows === 0) {
-        return res.status(404).json({
-          success: false,
-          message: "User not found"
-        });
+        return this.errorResponse(res, "User not found", 404);
       }
-
-      return res.json({
-        success: true,
-        message: "User deleted successfully"
-      });
+      return this.successResponse(res, null, "User deleted successfully");
     } catch (error) {
-      return res.status(500).json({
-        success: false,
-        message: error.message
-      });
+      return this.errorResponse(res, error.message, 500);
     }
   }
 }
