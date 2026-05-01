@@ -1,6 +1,6 @@
 export class BaseController {
-    successResponse(res, data, message = "Success",ustatusCode = 200) {
-        return res.json({
+    successResponse(res, data, message = "Success", statusCode = 200) {
+        return res.status(statusCode).json({
             success: true,
             message,
             data
