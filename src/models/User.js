@@ -1,14 +1,22 @@
 import Database from "../config/db.js";
+import { BaseModel } from "./BaseModel.js";
 
-export class User {
-  // Get all users
-  static async getAll() {
+export class User extends BaseModel {
+  async get() {
     const [rows] = await Database.pool.query("SELECT * FROM employees");
     return rows;
   }
 
-  // Create user
-  static async create({ employee_id, employee_name }) {
+  async find(id) {
+    const [rows] = await Database.pool.query(
+      "SELECT * FROM employees WHERE employee_id = ?",
+      [id],
+    );
+
+    return rows[0] ?? null;
+  }
+
+  async create({ employee_id, employee_name }) {
     let sql;
     let params;
 
@@ -28,8 +36,7 @@ export class User {
     };
   }
 
-  // Update user
-  static async update(id, employee_name) {
+  async update(id, { employee_name }) {
     const [result] = await Database.pool.query(
       "UPDATE employees SET employee_name = ? WHERE employee_id = ?",
       [employee_name, id],
@@ -38,8 +45,7 @@ export class User {
     return result;
   }
 
-  // Delete user
-  static async delete(id) {
+  async delete(id) {
     const [result] = await Database.pool.query(
       "DELETE FROM employees WHERE employee_id = ?",
       [id],
@@ -49,4 +55,4 @@ export class User {
   }
 }
 
-export default User;
+export default new User();

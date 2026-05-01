@@ -1,4 +1,4 @@
-import User from "../models/userModel.js";
+import User from "../models/User.js";
 import { BaseController } from "./BaseController.js";
 
 export class UserController extends BaseController {
@@ -6,10 +6,26 @@ export class UserController extends BaseController {
   // GET /users
   async getUsers(req, res) {
     try {
-      const users = await User.getAll();
+      const users = await User.get();
       return this.successResponse(res, users, "Users retrieved successfully");
     } catch (error) {
       return this.errorResponse(res, error.message);
+    }
+  }
+
+  // GET /users/:id
+  async findUser(req, res) {
+    try {
+      const { id } = req.params;
+      const user = await User.find(id);
+
+      if (!user) {
+        return this.errorResponse(res, "User not found", 404);
+      }
+
+      return this.successResponse(res, user, "User retrieved successfully");
+    } catch (error) {
+      return this.errorResponse(res, error.message, 500);
     }
   }
 
@@ -23,7 +39,7 @@ export class UserController extends BaseController {
       }
 
       const newUser = await User.create({ employee_id, employee_name });
-      return this.successResponse(res, newUser, "User created successfully");
+      return this.successResponse(res, newUser, "User created successfully", 201);
     } catch (error) {
       return this.errorResponse(res, error.message, 500);
     }
@@ -39,7 +55,7 @@ export class UserController extends BaseController {
         return this.errorResponse(res, "employee_name is required", 400);
       }
 
-      const result = await User.update(id, employee_name);
+      const result = await User.update(id, { employee_name });
 
       if (result.affectedRows === 0) {
         return this.errorResponse(res, "User not found", 404);
